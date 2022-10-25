@@ -39,9 +39,9 @@ from pywcmp.util import get_userdir
 LOGGER = logging.getLogger(__name__)
 
 topic_csvs = [
-    'root',
+    'channel',
     'version',
-    'distribution',
+    'wis2',
     'country',
     'centre-id',
     'resource-type',
@@ -69,7 +69,7 @@ class TopicHierarchy:
     levels: List[TopicLevel] = field(default_factory=list)
 
     def __post_init__(self):
-        dir_ = Path(get_userdir()) / 'wis2-topic-hierarchy'
+        dir_ = Path(get_userdir()) / 'topic-hierarchy'
         LOGGER.debug(f'Reading topic hierarchy files in {dir_}')
         for c in topic_csvs:
             filename = dir_ / f'{c}.csv'

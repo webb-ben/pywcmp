@@ -188,9 +188,9 @@ class WCMPTopicHierarchyTest(unittest.TestCase):
     def test_list_children(self):
         value = None
         expected_children = [
-            'root',
+            'channel',
             'version',
-            'distribution',
+            'wis2',
             'country',
             'centre-id',
             'resource-type',

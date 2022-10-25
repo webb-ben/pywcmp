@@ -25,6 +25,7 @@
 ###############################################################################
 
 import io
+import json
 import os
 import re
 from setuptools import Command, find_packages, setup
@@ -74,7 +75,7 @@ USERDIR = get_userdir()
 
 WCMP1_FILES = f'{USERDIR}{os.sep}wcmp-1.3'
 WCMP2_FILES = f'{USERDIR}{os.sep}wcmp-2.0'
-WIS2_TOPICS_FILES = f'{USERDIR}{os.sep}wis2-topic-hierarchy'
+WIS2_TOPICS_FILES = f'{USERDIR}{os.sep}topic-hierarchy'
 
 KEYWORDS = [
     'WMO',
@@ -130,23 +131,15 @@ if not os.path.exists(WIS2_TOPICS_FILES):
     print('Downloading topic hierarchies')
     os.makedirs(WIS2_TOPICS_FILES, exist_ok=True)
 
-    csvs = [
-        'root.csv',
-        'version.csv',
-        'distribution.csv',
-        'country.csv',
-        'centre-id.csv',
-        'resource-type.csv',
-        'data-policy.csv',
-        'earth-system-domain.csv'
-    ]
+    response = urlopen_('https://api.github.com/repos/wmo-im/wis2-topic-hierarchy/contents/topic-hierarchy') # noqa
+    response = json.loads(response.read())
 
-    for c in csvs:
-        url = f'https://raw.githubusercontent.com/wmo-im/wis2-topic-hierarchy/main/wis2-topic-hierarchy/{c}'  # noqa
-        th_filename = f'{WIS2_TOPICS_FILES}{os.sep}{c}'
-
-        with open(th_filename, 'wb') as f:
-            f.write(urlopen_(url).read())
+    for item in response:
+        if item.get('name').endswith('.csv'):
+            filename = item['name']
+            th_filepath = f'{WIS2_TOPICS_FILES}{os.sep}{filename}'
+            with open(th_filepath, 'wb') as f:
+                f.write(urlopen_(item['download_url']).read())
 
 
 setup(
